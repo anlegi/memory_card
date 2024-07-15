@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { generateShuffledCards } from "./GenerateShuffledCards";
 import Display from "./Display";
 import Scoreboard from "./Scoreboard"
+import Modal from "./Modal";
 
 
 function GameController() {
@@ -9,12 +10,13 @@ function GameController() {
   const [cards, setCards] = useState([])
   // state to hold the names of the clicked cards
   const [clickedNames, setClickedNames] = useState([])
-  // state to hold the number of moves
-  const [moves, setMoves] = useState(0)
+
+  const [bestScore, setBestScore] = useState(0)
   // state to hold the current score
   const [score, setScore] = useState(0)
-  // state to hold the game status
-  const [gameStatus, setGameStatus] = useState("")
+
+  const [modalMessage, setModalMessage] = useState("")
+  const [showModal, setShowModal] = useState(false)
 
   // effect to load pokemon data
   useEffect(() => {
@@ -36,20 +38,28 @@ function GameController() {
   function handleCardClick(index) {
     const clickedCard = cards[index]
     if (clickedNames.includes(clickedCard.name)) { //card has already been clicked, reset game
+      //update best score if current score is higher
+      if (score > bestScore) {
+        setBestScore(score)
+      }
       setClickedNames([])
-      setMoves(0)
       setScore(0)
-      alert("You clicked the same pokemon again! Starting over.")
+      setModalMessage("You clicked the same card again! Game over.");
+      setShowModal(true);
     } else {
       //card hasnt been clicked, update state
       const newClickedNames = [...clickedNames, clickedCard.name]
       setClickedNames(newClickedNames)
-      setMoves(moves + 1)
       setScore(score + 1)
 
       // Check for win condition
       if (newClickedNames.length === cards.length) {
-        setGameStatus('Congratulations! You have clicked all cards without repeating!');
+        setModalMessage("Congratulations! You have clicked all cards without repeating!")
+        setShowModal(true)
+
+        if (score + 1 > bestScore) {
+          setBestScore(score + 1)
+        }
       } else {
         // Shuffle the deck
         setCards(shuffleDeck([...cards]));
@@ -57,9 +67,15 @@ function GameController() {
     }
   }
 
+  function handleCloseModal() {
+    setShowModal(false);
+    setModalMessage('');
+  }
+
   return (
     <div>
-      <Scoreboard moves={moves} score={score} />
+      <Scoreboard score={score} bestScore={bestScore} />
+      {showModal && <Modal message={modalMessage} onClose={handleCloseModal} />}
       <Display cards={cards} onCardClick={handleCardClick} />
     </div>
   )

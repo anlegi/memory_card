@@ -1,10 +1,10 @@
 import React from "react";
 
-function Scoreboard({ moves, score}) {
+function Scoreboard({ score, bestScore }) {
   return (
     <div className="scoreboard">
-      <p>Moves: {moves}</p>
-      <p>Score: {score}</p>
+      <p className="pixelated-text-score">Score: {score}</p>
+      <p className="pixelated-text-bestscore">Best Score {bestScore}</p>
     </div>
   )
 }
