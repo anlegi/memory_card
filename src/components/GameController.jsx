@@ -32,10 +32,15 @@ function GameController() {
     return deck.sort(() => Math.random() - 0.5)
   }
 
+  function playSound() {
+    const audio = new Audio("./public/pokemon-sound.mp3");
+    audio.play();
+  }
 
 
   //handle card clicks
   function handleCardClick(index) {
+    playSound()
     const clickedCard = cards[index]
     if (clickedNames.includes(clickedCard.name)) { //card has already been clicked, reset game
       //update best score if current score is higher
@@ -62,7 +67,9 @@ function GameController() {
         }
       } else {
         // Shuffle the deck
-        setCards(shuffleDeck([...cards]));
+        setTimeout(() => {
+          setCards(shuffleDeck([...cards]))
+        }, 500)
       }
     }
   }
@@ -70,10 +77,18 @@ function GameController() {
   function handleCloseModal() {
     setShowModal(false);
     setModalMessage('');
+    resetGame(); // Reset the game state when closing the modal
+  }
+
+  async function resetGame() {
+    setClickedNames([]);
+    setScore(0);
+    const shuffledCards = await generateShuffledCards(8);
+    setCards(shuffledCards);
   }
 
   return (
-    <div>
+    <div className="scoregameboard">
       <Scoreboard score={score} bestScore={bestScore} />
       {showModal && <Modal message={modalMessage} onClose={handleCloseModal} />}
       <Display cards={cards} onCardClick={handleCardClick} />
