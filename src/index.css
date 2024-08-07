@@ -110,12 +110,12 @@ html, body {
 }
 
 .card:hover {
-  transform: rotateY(20deg) rotateX(10deg) scale(1.05); /* 3D rotation and scaling */
+  transform: rotateY(5deg) rotateX(12deg) scale(1.05); /* 3D rotation and scaling */
   border: solid rgba(159, 241, 255, 0.5);
 }
 
 .card:hover img {
-  transform: translateZ(20px); /* Move the image slightly forward */
+  transform: translateZ(12px); /* Move the image slightly forward */
 }
 
 
